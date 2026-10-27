@@ -11,7 +11,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="태풍방어선">
-<title>태풍 방어선 · 작은 마을, 세 번의 파도</title>
+<title>태풍 방어선 · 작은 마을, 다섯 번의 파도</title>
 <style>
 :root{--ground:#EEE8D5;--paper:#FFFDF6;--ink:#344B44;--muted:#7B8980;--leaf:#729D86;--sun:#F2C66D;--berry:#D98E8B;--shadow:rgba(52,75,68,.18)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
@@ -30,7 +30,7 @@ button{transition:transform 160ms cubic-bezier(.2,1.5,.5,1),background 160ms}
 .coin-pill{min-width:85px;transition:background 150ms}.coin{width:18px;height:18px;display:inline-block;border-radius:50%;background:var(--sun);position:relative;box-shadow:0 2px 0 var(--shadow)}.coin:after{content:'';position:absolute;left:8px;top:4px;width:2px;height:10px;border-radius:2px;background:var(--paper)}
 .wave-pill{flex:1;font-size:13px}.wave-pill b{font-size:16px}.sea-pill{font-size:11px;gap:4px;padding:0 10px}.mini-sea{display:flex;align-items:flex-end;gap:2px;height:16px}.mini-sea i{display:block;background:#7FAEBB;width:4px;border-radius:2px}.mini-sea i:nth-child(1){height:6px}.mini-sea i:nth-child(2){height:11px}.mini-sea i:nth-child(3){height:16px}
 .sound{width:32px;height:36px;padding:6px;background:transparent;flex-shrink:0}.sound canvas{width:23px;height:23px}.sound[aria-pressed="false"]{opacity:.4}
-.layout{display:flex;flex-direction:column;gap:18px;min-height:0;flex:1;justify-content:center}
+.forecast{display:flex;align-items:center;justify-content:center;flex-wrap:nowrap;white-space:nowrap;gap:6px;font-size:10px;background:var(--paper);border-radius:999px;padding:8px 12px;margin:0 0 11px;text-align:center;box-shadow:0 3px 0 var(--shadow)}#forecast{white-space:nowrap;flex-shrink:0}#threat-icons{width:48px;height:14px;flex-shrink:0}.map-picker{display:flex;gap:8px}.map-picker button{background:var(--ground);border-radius:12px;min-height:46px;padding:0 12px;flex:1;font-size:12px}.map-picker button:first-child{flex:2}.layout{display:flex;flex-direction:column;gap:18px;min-height:0;flex:1;justify-content:center}
 .map-area{width:100%;flex-shrink:0;position:relative}.map-heading{display:flex;justify-content:space-between;align-items:center;margin:0 3px 11px;color:var(--muted);font-size:10px;letter-spacing:1.4px}.map-heading strong{color:var(--ink);font-weight:800;font-size:11px;letter-spacing:1px}.north{font-size:9px;letter-spacing:1px}
 .board{position:relative;width:100%;aspect-ratio:1;border-radius:18px;box-shadow:0 6px 0 var(--shadow);background:#D9E5BD;isolation:isolate}
 #map{width:100%;height:100%;display:block;border-radius:18px;touch-action:none}
@@ -57,9 +57,9 @@ button{transition:transform 160ms cubic-bezier(.2,1.5,.5,1),background 160ms}
 <body>
 <main id="app">
 <header class="masthead"><span class="brand">태풍 방어선</span><span class="edition" aria-hidden="true"><i></i><i></i><i></i></span></header>
-<div class="hud"><div class="pill coin-pill" id="coin-pill"><span class="coin"></span><b id="coins">120</b></div><div class="pill wave-pill">파도 <b id="wave-number">1</b><span>/ 3</span></div><div class="pill sea-pill"><span class="mini-sea"><i></i><i></i><i></i></span><span id="sea-small">0.30</span></div><button class="sound" id="sound" aria-label="소리 켜기 또는 끄기" aria-pressed="true"><canvas width="46" height="46"></canvas></button></div>
+<div class="hud"><div class="pill coin-pill" id="coin-pill"><span class="coin"></span><b id="coins">220</b></div><div class="pill wave-pill">파도 <b id="wave-number">1</b><span>/ 5</span></div><div class="pill sea-pill"><span class="mini-sea"><i></i><i></i><i></i></span><span id="sea-small">0.30</span></div><button class="sound" id="sound" aria-label="소리 켜기 또는 끄기" aria-pressed="true"><canvas width="46" height="46"></canvas></button></div>
 <div class="layout">
-<section class="map-area" aria-label="해안마을 지도"><div class="map-heading"><strong>바람곶 마을</strong><span class="north">언덕 ↑</span></div><div class="board" id="board"><div class="timer" id="timer" hidden><i></i></div><canvas id="map" aria-label="12 곱하기 12 지도. 아래쪽 바다, 두 개의 수문"></canvas><div id="toast" role="status" aria-live="polite"></div></div><div class="map-caption"><span id="dry-count"><i class="dry-dot"></i>12가구의 일상</span><span id="map-note">낡은 방파제 · 수문 2곳</span></div></section>
+<section class="map-area" aria-label="해안마을 지도"><div class="map-heading"><strong id="map-name">바람곶 마을</strong><span class="north">언덕 ↑</span></div><div class="forecast"><span id="forecast">다음 파도 1/5 · 약 태풍 · 파도 1.7m</span><canvas id="threat-icons" aria-label="예상 유입 경로"></canvas></div><div class="board" id="board"><div class="timer" id="timer" hidden><i></i></div><canvas id="map" aria-label="12 곱하기 12 지도. 아래쪽 바다, 두 개의 수문"></canvas><div id="toast" role="status" aria-live="polite"></div></div><div class="map-caption"><span id="dry-count"><i class="dry-dot"></i>12가구의 일상</span><span id="map-note">낡은 방파제 · 수문 2곳</span></div></section>
 <aside class="controls">
 <div class="section-label" id="build-label" style="display:none"><span>방어선 만들기</span><b id="tool-note">길게 끌어 연결</b></div>
 <div id="build-controls"><div class="tool-dock"><button class="tool" data-tool="dyke" aria-pressed="true"><canvas></canvas><span class="tool-label">제방<span class="cost" id="cost-dyke">8</span></span></button><button class="tool" data-tool="drain" aria-pressed="false"><canvas></canvas><span class="tool-label">배수로<span class="cost" id="cost-drain">4</span></span></button><button class="tool" data-tool="pump" aria-pressed="false"><canvas></canvas><span class="tool-label">펌프<span class="cost" id="cost-pump">30</span></span></button><button class="tool" data-tool="remove" aria-pressed="false"><canvas></canvas><span class="tool-label">철거<span class="cost">½</span></span></button></div></div>
@@ -70,9 +70,9 @@ button{transition:transform 160ms cubic-bezier(.2,1.5,.5,1),background 160ms}
 </div>
 <footer class="footer" aria-hidden="true"></footer>
 </main>
-<div class="overlay" id="intro"><section class="intro-panel"><span class="eyebrow">바람곶의 작은 방어 작전</span><h1>태풍<br>방어선</h1><canvas class="intro-art" id="intro-art"></canvas><p>세 번의 파도, 12가구의 일상을 지켜요.</p><button class="primary" id="begin">시작<span class="play"></span></button><div class="intro-meta"><span>제방 · 배수로 · 펌프</span><span>약 3분</span></div></section></div>
+<div class="overlay" id="intro"><section class="intro-panel"><span class="eyebrow">바람곶의 작은 방어 작전</span><h1>태풍<br>방어선</h1><canvas class="intro-art" id="intro-art"></canvas><p>다섯 번의 파도, 12가구의 일상을 지켜요.</p><div class="map-picker"><button id="map-choice" aria-label="지도 바꾸기">바람곶 마을</button><button id="map-random">랜덤</button></div><button class="primary" id="begin">시작<span class="play"></span></button><div class="intro-meta"><span>제방 · 배수로 · 펌프</span><span>약 4–5분</span></div></section></div>
 <div class="overlay" id="card-overlay" hidden><section class="card-panel"><h2>다음 파도를 위한 한 장</h2><p>마을에 도착한 장비 중 하나를 골라요.</p><div class="cards" id="cards"></div><div class="card-footer">장비 하나를 눌러 선택</div></section></div>
-<div class="overlay" id="final-overlay" hidden><section class="final-panel"><span class="eyebrow">바람곶 방어 기록</span><h2 id="final-title">일상을 지켰어요</h2><p class="final-total" id="final-total"></p><div id="results"></div><button class="primary" id="restart">다시 하기<span class="play"></span></button><p class="final-note">완성판에서는: 지형 고르기 · 더 큰 태풍</p></section></div>
+<div class="overlay" id="final-overlay" hidden><section class="final-panel"><span class="eyebrow">바람곶 방어 기록</span><h2 id="final-title">일상을 지켰어요</h2><p class="final-total" id="final-total"></p><div id="results"></div><button class="primary" id="restart">다시 하기<span class="play"></span></button><p class="final-note">다시 하면 다른 마을에서 새 태풍을 만나요</p></section></div>
 <canvas id="fx" aria-hidden="true"></canvas>
 <script src="game.js"></script>
 <script>if("serviceWorker"in navigator)addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})</script>
