@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#EEE8D5">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="태풍방어선">
+<title>태풍 방어선 · 작은 마을, 세 번의 파도</title>
+<style>
+:root{--ground:#EEE8D5;--paper:#FFFDF6;--ink:#344B44;--muted:#7B8980;--leaf:#729D86;--sun:#F2C66D;--berry:#D98E8B;--shadow:rgba(52,75,68,.18)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
+body{background:var(--ground);color:var(--ink);font:600 15px system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif;font-variant-numeric:tabular-nums}
+button{font:inherit;border:0;color:inherit;cursor:pointer;touch-action:manipulation}
+button:focus-visible{outline:3px solid var(--sun);outline-offset:4px}
+button:active{transform:translateY(2px) scale(.94)}
+button{transition:transform 160ms cubic-bezier(.2,1.5,.5,1),background 160ms}
+[hidden]{display:none!important}
+#app{height:100vh;height:100dvh;max-width:1050px;margin:auto;padding:calc(12px + env(safe-area-inset-top)) 16px calc(15px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:13px}
+.masthead{display:flex;align-items:center;justify-content:space-between;padding:0 3px;height:31px;flex-shrink:0}
+.brand{font-size:17px;font-weight:800;letter-spacing:-.9px}.edition{display:flex;gap:5px;align-items:center}.edition i{width:5px;height:5px;background:var(--leaf);border-radius:50%;opacity:.45}.edition i:first-child{opacity:1}
+.hud{display:flex;align-items:center;gap:7px;flex-shrink:0;position:relative;height:42px}
+.pill{height:38px;border-radius:999px;background:var(--paper);display:flex;align-items:center;justify-content:center;gap:7px;padding:0 12px;box-shadow:0 3px 0 var(--shadow);white-space:nowrap}
+.coin-pill{min-width:85px;transition:background 150ms}.coin{width:18px;height:18px;display:inline-block;border-radius:50%;background:var(--sun);position:relative;box-shadow:0 2px 0 var(--shadow)}.coin:after{content:'';position:absolute;left:8px;top:4px;width:2px;height:10px;border-radius:2px;background:var(--paper)}
+.wave-pill{flex:1;font-size:13px}.wave-pill b{font-size:16px}.sea-pill{font-size:11px;gap:4px;padding:0 10px}.mini-sea{display:flex;align-items:flex-end;gap:2px;height:16px}.mini-sea i{display:block;background:#7FAEBB;width:4px;border-radius:2px}.mini-sea i:nth-child(1){height:6px}.mini-sea i:nth-child(2){height:11px}.mini-sea i:nth-child(3){height:16px}
+.sound{width:32px;height:36px;padding:6px;background:transparent;flex-shrink:0}.sound canvas{width:23px;height:23px}.sound[aria-pressed="false"]{opacity:.4}
+.layout{display:flex;flex-direction:column;gap:18px;min-height:0;flex:1;justify-content:center}
+.map-area{width:100%;flex-shrink:0;position:relative}.map-heading{display:flex;justify-content:space-between;align-items:center;margin:0 3px 11px;color:var(--muted);font-size:10px;letter-spacing:1.4px}.map-heading strong{color:var(--ink);font-weight:800;font-size:11px;letter-spacing:1px}.north{font-size:9px;letter-spacing:1px}
+.board{position:relative;width:100%;aspect-ratio:1;border-radius:18px;box-shadow:0 6px 0 var(--shadow);background:#D9E5BD;isolation:isolate}
+#map{width:100%;height:100%;display:block;border-radius:18px;touch-action:none}
+.timer{position:absolute;top:-3px;left:16px;right:16px;height:5px;border-radius:8px;overflow:hidden;background:var(--ground);z-index:2}.timer i{display:block;background:var(--leaf);height:100%;width:100%;transform-origin:left}
+.map-caption{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--muted);padding:14px 3px 0;letter-spacing:.6px}.dry-dot{display:inline-block;width:6px;height:6px;background:var(--leaf);border-radius:50%;margin-right:4px}
+.controls{display:flex;flex-direction:column;gap:14px;flex-shrink:0}.section-label{display:flex;align-items:center;justify-content:space-between;font-size:10px;letter-spacing:1.2px;color:var(--muted);padding:0 3px}.section-label b{font-weight:600;letter-spacing:.4px}
+.tool-dock{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.tool{background:var(--paper);border-radius:16px;padding:8px 2px 9px;box-shadow:0 4px 0 var(--shadow);height:85px;position:relative}.tool[aria-pressed="true"]{background:var(--leaf);color:var(--paper)}.tool canvas{display:block;width:42px;height:37px;margin:0 auto 4px}.tool-label{font-size:12px;white-space:nowrap;font-weight:800}.cost{font-size:11px;opacity:.75;margin-left:3px}.tool[aria-pressed="true"]:before{content:'';width:5px;height:5px;background:var(--sun);border-radius:50%;position:absolute;right:9px;top:9px}
+.primary{background:var(--leaf);color:var(--paper);height:55px;border-radius:16px;box-shadow:0 4px 0 var(--shadow);font-size:16px;font-weight:800;letter-spacing:.3px;display:flex;align-items:center;justify-content:center;gap:17px;width:100%}.play{width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:8px solid currentColor}.primary small{font-size:11px;font-weight:600;opacity:.75}
+.coach{height:25px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);gap:6px;white-space:nowrap}.coach:before{content:'';width:5px;height:5px;border-radius:50%;background:var(--sun)}
+.wave-controls{display:flex;flex-direction:column;gap:15px}.wave-row{display:flex;gap:8px}.gate-hint{flex:1;font-size:12px}.speed{background:var(--paper);border-radius:999px;padding:0 16px;box-shadow:0 3px 0 var(--shadow);font-size:12px}.speed[aria-pressed="true"]{background:var(--sun)}.gauge{display:flex;align-items:center;gap:12px;padding:2px 4px}.gauge-text{width:62px;font-size:10px;color:var(--muted)}.gauge-text b{display:block;font-size:21px;line-height:1.2;color:var(--ink)}.gauge-track{flex:1;height:18px;background:var(--paper);border-radius:99px;position:relative;overflow:hidden}.gauge-fill{height:100%;width:15%;background:#7FAEBB;border-radius:99px;transition:width .1s linear}.gauge-track:after{content:'';position:absolute;left:73%;top:0;bottom:0;width:2px;background:var(--berry)}.gauge-note{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);padding-left:78px;margin-top:-11px}.wave-status{text-align:center;color:var(--leaf);font-size:12px;min-height:24px;padding-top:8px}
+.footer{height:18px;display:flex;justify-content:space-between;color:var(--muted);font-size:9px;letter-spacing:1px;flex-shrink:0;padding:0 3px;align-items:flex-end}
+#toast{position:absolute;z-index:6;left:50%;top:20px;transform:translate(-50%,-12px);opacity:0;pointer-events:none;padding:10px 15px;border-radius:999px;background:var(--paper);box-shadow:0 3px 0 var(--shadow);font-size:12px;font-weight:800;white-space:nowrap;transition:opacity .2s,transform .3s cubic-bezier(.2,1.5,.5,1)}#toast.visible{opacity:1;transform:translate(-50%,0)}
+.overlay{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(52,75,68,.35);overscroll-behavior:none}.intro-panel{width:342px;background:var(--paper);border-radius:24px;padding:27px 25px 25px;box-shadow:0 7px 0 var(--shadow);text-align:center;position:relative}.eyebrow{font-size:10px;letter-spacing:3px;color:var(--muted);font-weight:800}.intro-panel h1{font-size:38px;line-height:1.13;letter-spacing:-2.5px;margin:16px 0 8px;font-weight:800}.intro-panel p{font-size:13px;color:var(--muted);margin:12px 0 22px}.intro-art{width:100%;height:154px;display:block;margin:12px 0 4px}.intro-panel .primary{margin-top:18px}.intro-meta{display:flex;justify-content:space-between;margin-top:20px;color:var(--muted);font-size:10px;letter-spacing:.5px}
+.card-panel{width:100%;max-width:660px;text-align:center}.card-panel h2{color:var(--paper);font-size:27px;letter-spacing:-1px;margin:0 0 8px}.card-panel>p{color:var(--paper);font-size:12px;margin:0 0 34px;opacity:.8}.cards{display:flex;gap:9px;justify-content:center;align-items:center;padding:0 1px}.equipment{background:var(--paper);border-radius:16px;box-shadow:0 6px 0 var(--shadow);padding:16px 5px 20px;width:31.5%;height:224px;display:flex;flex-direction:column;align-items:center;position:relative;animation:card-in .55s cubic-bezier(.2,1.4,.5,1) both;animation-delay:calc(var(--n)*60ms);transform:rotate(var(--tilt));transition:transform .3s,opacity .3s}.equipment canvas{width:82px;height:103px;max-width:100%;margin-bottom:13px}.equipment strong{font-size:18px;letter-spacing:-1px;word-break:keep-all;line-height:1.25}.equipment small{display:block;color:var(--muted);font-size:10px;letter-spacing:-.5px;white-space:nowrap;margin-top:10px}.equipment .card-number{font-size:9px;color:var(--muted);position:absolute;top:12px;left:13px;letter-spacing:1px}.equipment.selected{transform:translateY(-30px) rotate(0) scale(1.08)!important}.equipment.discard{transform:translateY(150px) rotate(12deg)!important;opacity:0}.card-footer{color:var(--paper);font-size:11px;opacity:.7;margin-top:35px}
+.final-panel{max-width:360px;width:100%;background:var(--paper);border-radius:24px;padding:27px 25px;box-shadow:0 7px 0 var(--shadow);text-align:center}.final-panel h2{font-size:32px;letter-spacing:-1.5px;margin:11px 0 3px}.final-total{font-size:12px;color:var(--muted);margin:0 0 21px}.result-row{display:flex;justify-content:space-between;align-items:center;padding:15px 3px;border-bottom:2px solid var(--ground);font-size:13px}.small-stamp{color:#D2645C;transform:rotate(-5deg);font-size:17px;font-weight:800}.final-panel .primary{margin-top:25px}.final-note{font-size:10px;color:var(--muted);margin:19px 0 0;white-space:nowrap}
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:25;pointer-events:none}
+@keyframes card-in{from{opacity:0;transform:translateY(180px) rotate(var(--tilt))}to{opacity:1;transform:translateY(0) rotate(var(--tilt))}}
+@media(min-width:760px){#app{justify-content:center;gap:19px;padding:24px 28px}.masthead{height:28px}.brand{font-size:21px}.edition{font-size:11px}.hud{max-width:640px;width:calc(100% - 304px)}.layout{flex-direction:row;align-items:center;gap:30px;flex:none;justify-content:space-between}.map-area{width:min(640px,calc(100% - 310px))}.controls{width:280px;gap:22px}.tool-dock{grid-template-columns:repeat(2,1fr);gap:12px}.tool{height:104px;padding:13px}.tool canvas{height:44px;width:50px}.tool-label{font-size:14px}.section-label{font-size:11px}.coach{white-space:normal;font-size:12px;line-height:1.7;text-align:center;height:43px}.primary{height:59px}.map-heading{margin-bottom:13px}.map-caption{font-size:11px}.footer{margin-top:5px}.equipment{height:285px;padding:25px 13px}.equipment canvas{width:125px;height:136px}.equipment strong{font-size:21px}.equipment small{font-size:12px}.card-panel>p{margin-bottom:39px}.cards{gap:19px}.wave-row{flex-direction:column;gap:14px}.gate-hint{flex:none}.speed{height:38px}.gauge{margin-top:8px}.wave-status{padding-top:20px}}
+@media(max-height:740px) and (max-width:759px){#app{gap:7px;padding-top:calc(7px + env(safe-area-inset-top));padding-bottom:calc(8px + env(safe-area-inset-bottom))}.masthead{height:22px}.layout{gap:13px}.map-heading{margin-bottom:8px}.controls{gap:10px}.tool{height:74px;padding:5px 1px}.tool canvas{height:31px;width:37px}.coach{height:20px}.primary{height:47px}.map-caption{padding-top:12px}.footer{height:12px}.section-label{display:none}}
+@media(max-height:620px) and (max-width:759px){.map-area{width:min(100%,calc(100dvh - 237px));align-self:center}.map-heading,.map-caption,.footer,.coach{display:none}.layout{gap:12px}.controls{gap:9px}.masthead{height:20px}.tool{height:65px}.tool canvas{height:25px}.primary{height:42px}.hud{height:37px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<main id="app">
+<header class="masthead"><span class="brand">태풍 방어선</span><span class="edition" aria-hidden="true"><i></i><i></i><i></i></span></header>
+<div class="hud"><div class="pill coin-pill" id="coin-pill"><span class="coin"></span><b id="coins">120</b></div><div class="pill wave-pill">파도 <b id="wave-number">1</b><span>/ 3</span></div><div class="pill sea-pill"><span class="mini-sea"><i></i><i></i><i></i></span><span id="sea-small">0.30</span></div><button class="sound" id="sound" aria-label="소리 켜기 또는 끄기" aria-pressed="true"><canvas width="46" height="46"></canvas></button></div>
+<div class="layout">
+<section class="map-area" aria-label="해안마을 지도"><div class="map-heading"><strong>바람곶 마을</strong><span class="north">언덕 ↑</span></div><div class="board" id="board"><div class="timer" id="timer" hidden><i></i></div><canvas id="map" aria-label="12 곱하기 12 지도. 아래쪽 바다, 두 개의 수문"></canvas><div id="toast" role="status" aria-live="polite"></div></div><div class="map-caption"><span id="dry-count"><i class="dry-dot"></i>12가구의 일상</span><span id="map-note">낡은 방파제 · 수문 2곳</span></div></section>
+<aside class="controls">
+<div class="section-label" id="build-label" style="display:none"><span>방어선 만들기</span><b id="tool-note">길게 끌어 연결</b></div>
+<div id="build-controls"><div class="tool-dock"><button class="tool" data-tool="dyke" aria-pressed="true"><canvas></canvas><span class="tool-label">제방<span class="cost" id="cost-dyke">8</span></span></button><button class="tool" data-tool="drain" aria-pressed="false"><canvas></canvas><span class="tool-label">배수로<span class="cost" id="cost-drain">4</span></span></button><button class="tool" data-tool="pump" aria-pressed="false"><canvas></canvas><span class="tool-label">펌프<span class="cost" id="cost-pump">30</span></span></button><button class="tool" data-tool="remove" aria-pressed="false"><canvas></canvas><span class="tool-label">철거<span class="cost">½</span></span></button></div></div>
+<div class="wave-controls" id="wave-controls" hidden><div class="wave-row"><div class="pill gate-hint">수문을 눌러 열고 닫기</div><button class="speed" id="speed" aria-pressed="false">빨리 감기 ×2</button></div><div class="gauge"><span class="gauge-text">해수면<b id="sea-large">0.30</b></span><div class="gauge-track"><div class="gauge-fill" id="gauge-fill"></div></div></div><div class="gauge-note"><span>잔잔</span><span>월류 2.2</span></div><div class="wave-status" id="wave-status">마을의 방어선을 지켜보세요</div></div>
+<button class="primary" id="start">태풍 맞이하기<span class="play"></span></button>
+<div class="coach" id="coach">바다 쪽에 제방</div>
+</aside>
+</div>
+<footer class="footer" aria-hidden="true"></footer>
+</main>
+<div class="overlay" id="intro"><section class="intro-panel"><span class="eyebrow">바람곶의 작은 방어 작전</span><h1>태풍<br>방어선</h1><canvas class="intro-art" id="intro-art"></canvas><p>세 번의 파도, 12가구의 일상을 지켜요.</p><button class="primary" id="begin">시작<span class="play"></span></button><div class="intro-meta"><span>제방 · 배수로 · 펌프</span><span>약 3분</span></div></section></div>
+<div class="overlay" id="card-overlay" hidden><section class="card-panel"><h2>다음 파도를 위한 한 장</h2><p>마을에 도착한 장비 중 하나를 골라요.</p><div class="cards" id="cards"></div><div class="card-footer">장비 하나를 눌러 선택</div></section></div>
+<div class="overlay" id="final-overlay" hidden><section class="final-panel"><span class="eyebrow">바람곶 방어 기록</span><h2 id="final-title">일상을 지켰어요</h2><p class="final-total" id="final-total"></p><div id="results"></div><button class="primary" id="restart">다시 하기<span class="play"></span></button><p class="final-note">완성판에서는: 지형 고르기 · 더 큰 태풍</p></section></div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<script src="game.js"></script>
+<script>if("serviceWorker"in navigator)addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})</script>
+</body>
+</html>
